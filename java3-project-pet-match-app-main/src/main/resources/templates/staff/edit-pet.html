@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/layout.html :: layout(~{::body}, 'Staff Update Pet Form')}">
+<body>
+
+    <h1 class="display-6 text-center mb-4">Edit Pet Profile</h1>
+
+    <form th:action="@{/staff/edit-pet}" method="post" th:object="${updatePetForm}" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}" />
+
+        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger" role="alert">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4 text-center">
+                <div class="square-wrapper">
+                    <div class="square-content">
+                        <img th:src="${currentPetPhotoUrl}"
+                             alt="Current Pet Photo"
+                             class="img-fluid"
+                             style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-body p-3">
+                        <h6 class="card-title text-start mb-2">Update Photo</h6>
+
+                        <input class="form-control form-control-sm mb-2" type="file" th:field="*{newPhoto}">
+                        <div class="form-check text-start">
+                            <input class="form-check-input" type="checkbox" id="deletePhoto" th:field="*{deletePhoto}">
+                            <label class="form-check-label text-danger small" for="deletePhoto">
+                                Delete current photo (Use default)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-8">
+                <div class="row g-2">
+                    <div class="col-sm-6">
+                        <label for="petName" class="form-label">Pet's Name?</label>
+                        <input type="text" id="petName" class="form-control form-control-lg" th:field="*{petName}" th:errorclass="is-invalid">
+                        <div th:if="${#fields.hasErrors('petName')}" class="invalid-feedback" th:errors="*{petName}"></div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="petType" class="form-label">Species?</label>
+                        <select id="petType" class="form-select form-select-sm" th:field="*{petType}" required>
+                            <option value="" disabled selected>-- Select Pet Type --</option>
+                            <option th:each="type : ${petTypes}" th:value="${type}" th:text="${type}"></option>
+                        </select>
+                        <div th:if="${#fields.hasErrors('petType')}" class="invalid-feedback" th:errors="*{petType}"></div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="petBreed" class="form-label">Breed?</label>
+                        <input type="text" id="petBreed" class="form-control form-control-lg" th:field="*{petBreed}" >
+                        <div th:if="${#fields.hasErrors('petBreed')}" class="invalid-feedback" th:errors="*{petBreed}"></div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="age" class="form-label">Age in years?</label>
+                        <input type="text" id="age" class="form-control form-control-lg" th:field="*{age}" >
+                        <div th:if="${#fields.hasErrors('age')}" class="invalid-feedback" th:errors="*{age}"></div>
+                    </div>
+
+
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label class="form-label">Sociability: </label>
+
+                            <div class="mb-2 mt-2 ms-3">Dogs</div>
+                            <div class="form-check">
+                                <input class="form-check-input ms-2" type="checkbox" th:field="*{sociability}" th:value="LIKES_DOGS" id="LIKES_DOGS" />
+                                <label class="form-check-label ms-2" for="LIKES_DOGS">Good with dogs</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input ms-2" type="checkbox" th:field="*{sociability}" th:value="DISLIKES_DOGS" id="DISLIKES_DOGS" />
+                                <label class="form-check-label ms-2" for="DISLIKES_DOGS">Not good with dogs</label>
+                            </div>
+
+                            <div class="mb-2 mt-3 ms-3">Cats</div>
+                            <div class="form-check">
+                                <input class="form-check-input ms-2" type="checkbox" th:field="*{sociability}" th:value="LIKES_CATS" id="LIKES_CATS" />
+                                <label class="form-check-label ms-2" for="LIKES_CATS">Good with cats</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input ms-2" type="checkbox" th:field="*{sociability}" th:value="DISLIKES_CATS" id="DISLIKES_CATS" />
+                                <label class="form-check-label ms-2" for="DISLIKES_CATS">Not good with cats</label>
+                            </div>
+
+                            <div class="mb-2 mt-3 ms-3">Kids</div>
+                            <div class="form-check">
+                                <input class="form-check-input ms-2" type="checkbox" th:field="*{sociability}" th:value="LIKES_KIDS" id="LIKE_KIDS" />
+                                <label class="form-check-label ms-2" for="LIKE_KIDS">Good with kids</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input ms-2" type="checkbox" th:field="*{sociability}" th:value="DISLIKES_KIDS" id="DISLIKES_KIDS" />
+                                <label class="form-check-label ms-2" for="DISLIKES_KIDS">Not good with kids</label>
+                            </div>
+
+                            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('sociability')}" th:errors="*{sociability}"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label for="date_pet_sheltered" class="form-label">Date Sheltered</label>
+                            <input type="date" id="date_pet_sheltered" class="form-control form-control-lg"
+                                   th:field="*{datePetSheltered}" th:errorclass="is-invalid">
+                            <div th:if="${#fields.hasErrors('datePetSheltered')}" class="invalid-feedback"
+                                 th:errors="*{datePetSheltered}"></div>
+                        </div>
+                        
+                        <div class="col-sm-8">
+                            <label for="availability" class="form-label">Availability Status?</label>
+                            <select id="availability" class="form-select form-select-lg" th:field="*{availability}" required>
+                                <option value="" disabled selected>-- Select Availability --</option>
+                                <option th:each="option : ${availabilityOptions}" th:value="${option}" th:text="${option}"></option>
+                            </select>
+                            <div th:if="${#fields.hasErrors('availability')}" class="invalid-feedback" th:errors="*{availability}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="specialNeeds" class="form-label">Special Needs?</label>
+                            <textarea rows="2" id="specialNeeds" class="form-control form-control-lg"
+                                      th:field="*{specialNeeds}"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="healthIssues" class="form-label">Health Issues?</label>
+                            <textarea rows="2" id="healthIssues" class="form-control form-control-lg"
+                                      th:field="*{healthIssues}"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-12 mt-3">
+                <label for="about" class="form-label">About this animal?</label>
+                <textarea id="about" rows="5" class="form-control" placeholder="about?" th:field="*{about}"></textarea>
+            </div>
+        </div>
+
+        <div class="col-12 mt-4 text-end pb-3">
+        <button type="submit" class="btn btn-success">Update Pet</button>
+        </div>
+
+    </form>
+
+    <script src="/js/sociability.js" defer></script>
+
+</body>

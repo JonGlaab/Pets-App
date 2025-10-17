@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/layout.html :: layout(~{::body}, 'Edit User Role')}">
+<body>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg p-3">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Edit User Role</h2>
+
+                    <div class="alert alert-info text-center">
+                        Editing Role for: <strong th:text="${user.firstName} + ' ' + ${user.lastName}"></strong>
+                        (<span th:text="${user.email}"></span>)
+                    </div>
+
+                    <form th:action="@{/admin/user/{id}/edit-role(id=${user.id})}" method="post"
+                          th:object="${userRoleUpdateDto}">
+
+                        <!-- Global Error/Success Messaging -->
+                        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger" role="alert">
+                            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+                        </div>
+
+                        <!-- Hidden Field for User ID -->
+                        <input type="hidden" th:field="*{id}" />
+
+                        <!-- Role Selection Dropdown -->
+                        <div class="mb-4">
+                            <label for="role" class="form-label fw-bold">Select New Role</label>
+                            <select id="role" class="form-select form-select-lg" th:field="*{role}" th:errorclass="is-invalid">
+                                <option value="">Select Role</option>
+                                <!-- Loop through the Role enum values (ADMIN, STAFF, USER) -->
+                                <option th:each="roleOption : ${T(edu.java3projectpetmatchapp.enums.Role).values()}"
+                                        th:value="${roleOption}"
+                                        th:text="${roleOption}"></option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a th:href="@{/admin/users-list}" class="btn btn-outline-secondary">Back to users list</a>
+                            <button type="submit" class="btn btn-success">Update Role</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>

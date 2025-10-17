@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/layout.html :: layout(~{::body}, 'Apply for a pet')}">
+<body>
+
+<h2 class="mb-4 text-center" th:text="'You\'re applying for ' + ${petApplicationForm.pet.petName}"></h2>
+
+    <form th:action="@{/pet/{id}/apply(id=${petApplicationForm.pet.id})}" method="post" th:object="${petApplicationForm}" enctype="multipart/form-data">
+        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger" role="alert">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4 text-center">
+                <div class="square-wrapper">
+                    <div class="square-content">
+                        <img th:src="${petApplicationForm.pet.petPhotoUrl}"
+                             alt="Pet Photo"
+                             class="img-fluid"
+                             style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <span class="badge mb-3" id="availability"
+                          th:classappend="${petApplicationForm.pet.availability == 'ADOPTED'} ? 'bg-danger' :
+                                     (${petApplicationForm.pet.availability == 'RESERVED'} ? 'bg-warning text-dark' : 'bg-success')"
+                          th:text="${petApplicationForm.pet.availability}">AVAILABLE
+                    </span>
+                    <span>
+                        <button type="submit" class="btn btn-info"
+                                th:text="'submit to apply for ' + ${petApplicationForm.pet.petName}">Apply for this cutie</button>
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <input type="hidden" th:field="*{pet.id}" />
+                <input type="hidden" th:field="*{user.id}" />
+                <div class="row g-2">
+                    <label for="otherPets" class="form-label">Any other pets in the home?</label>
+                    <select id="otherPets" class="form-select form-select-lg" th:field="*{otherPets}" required>
+                        <option value="" disabled selected>-- Select Pet Type --</option>
+                        <option th:each="type : ${otherPets}" th:value="${type}" th:text="${type}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('otherPets')}" class="invalid-feedback" th:errors="*{otherPets}"></div>
+                </div>
+
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" id="yardAccess" th:field="*{yardAccess}">
+                    <label class="form-check-label" for="yardAccess">I have yard access</label>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-8">
+                        <label for="householdSituation" class="form-label">Household Situation?</label>
+                        <select id="householdSituation" class="form-select form-select-lg" th:field="*{householdSituation}" required>
+                            <option value="" disabled selected>-- Select household situation --</option>
+                            <option th:each="type : ${householdSituation}" th:value="${type}" th:text="${type}"></option>
+                        </select>
+                        <div th:if="${#fields.hasErrors('householdSituation')}" class="invalid-feedback" th:errors="*{householdSituation}"></div>
+                    </div>
+
+                    <div class="col-sm-8">
+                        <label for="homeType" class="form-label">What sort of domicile do you
+                            live in?</label>
+                        <select id="homeType" class="form-select form-select-lg" th:field="*{homeType}" required>
+                            <option value="" disabled selected>-- Select home type --</option>
+                            <option th:each="type : ${homeType}" th:value="${type}" th:text="${type}"></option>
+                        </select>
+                        <div th:if="${#fields.hasErrors('homeType')}" class="invalid-feedback" th:errors="*{homeType}"></div>
+                    </div>
+
+                    <div class="col-12 mt-3 pb-3">
+                        <label for="additionalInfo" class="form-label">Tell us a little about you</label>
+                        <textarea id="additionalInfo" rows="7" class="form-control" placeholder="about?" th:field="*{additionalInfo}"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>

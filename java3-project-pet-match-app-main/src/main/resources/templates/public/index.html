@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/layout.html :: layout(~{::body}, 'Home - Pets, Pets, and More Pets')}">
+<body>
+
+    <div class="pb-3">
+        <div class="jumbotron text-center">
+            <h1 class="mb-0 text-dark">Welcome to Pets, Pets, and More Pets!</h1>
+            <small class="lead">Our mission is to inspire you to adopt (not shop for) your next furry family member.</small>
+        </div>
+
+        <div class="d-flex flex-column align-items-center my-3">
+            <label class="mb-2 fw-semibold">Search for your next pet by:</label>
+
+            <form id="filterForm"
+                  hx-get="/pet/filter"
+                  hx-target="#pet_cards"
+                  hx-trigger="change from:select"
+                  hx-include="#filterForm"
+                  class="d-flex flex-wrap align-items-end gap-3 justify-content-center">
+
+                <div class="d-flex flex-column">
+                    <label for="petType" class="form-label mb-1">Animal Type</label>
+                    <select name="petType" id="petType" class="form-select form-select-sm">
+                        <option value="ALL">All</option>
+                        <option value="DOG">Dog</option>
+                        <option value="CAT">Cat</option>
+                    </select>
+                </div>
+
+                <div class="d-flex flex-column">
+                    <label for="petAge" class="form-label mb-1">Age</label>
+                    <select name="petAge" id="petAge" class="form-select form-select-sm">
+                        <option value="All">All</option>
+                        <option value="Younger">Younger</option>
+                        <option value="Adult">Adult</option>
+                        <option value="Older">Older</option>
+                    </select>
+                </div>
+
+                <div class="d-flex flex-column">
+                    <label for="datePetSheltered" class="form-label mb-1">Date Sheltered</label>
+                    <select name="datePetSheltered" id="datePetSheltered" class="form-select form-select-sm">
+                        <option value="All">All</option>
+                        <option value="DESC">Recent addition</option>
+                        <option value="ASC">Veteran pets</option>
+                    </select>
+                </div>
+
+            </form>
+        </div>
+
+
+        <div id="pet_cards" th:insert="~{layout/fragments.html :: petcards(pets=${pets})}"></div>
+    </div>
+</body>

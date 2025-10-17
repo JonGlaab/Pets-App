@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/layout.html :: layout(~{::body}, 'Home - Pets, Pets, and More Pets')}">
+<body>
+
+<p>Error 403</p>
+<p>You don't have access to view this page or maybe you aren't logged in properly</p>
+
+<a class="nav-link text-dark" th:href="@{/login}">Login</a>
+
+<a class="nav-link text-blue" th:href="@{/}">or try again from the start</a>
+
+</body>
+

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/layout.html :: layout(~{::body}, 'Pay Adoption Fee - Pet Match App')}">
+<body>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <h2 class="text-primary">Pay Adoption Fee</h2>
+                    <p class="text-muted">Complete your pet adoption process</p>
+                </div>
+                
+                <div class="bg-light p-3 rounded mb-4">
+                    <h5 class="mb-2">Pet Details</h5>
+                    <p class="mb-1"><strong>Pet Name:</strong> <span th:text="${petName}">Pet Name</span></p>
+                    <p class="mb-0"><strong>Adopter Email:</strong> <span th:text="${adopterEmail}">Email</span></p>
+                </div>
+                
+                <div class="mb-4">
+                    <h5 class="mb-3">Payment Summary</h5>
+                    <div class="d-flex justify-content-between">
+                        <span>Adoption Fee:</span>
+                        <span class="fw-bold">$100.00 CAD</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-bold">Total:</span>
+                        <span class="fw-bold text-primary">$100.00 CAD</span>
+                    </div>
+                </div>
+                
+                <button id="checkout-button" class="btn btn-primary w-100 py-3">
+                    <span id="button-text">Proceed to Payment</span>
+                    <span id="loading-spinner" class="d-none">
+                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                        Processing...
+                    </span>
+                </button>
+                
+                <div id="error-message" class="alert alert-danger mt-3 d-none" role="alert"></div>
+                <div id="success-message" class="alert alert-success mt-3 d-none" role="alert"></div>
+                
+                <div class="text-center mt-4">
+                    <small class="text-muted">
+                        <i class="bi bi-shield-check"></i>
+                        Secure payment powered by Stripe
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="adopterEmail" th:value="${adopterEmail}">
+<input type="hidden" id="petName" th:value="${petName}">
+<input type="hidden" id="applicationId" th:value="${appId}">
+<input type="hidden" id="stripePublishableKey" th:value="${stripePublishableKey}">
+
+<script src="https://js.stripe.com/v3/"></script>
+<script src="/js/checkout.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/layout.html :: layout(~{::body}, 'Payment Successful - Pet Match App')}">
+<body>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body p-4 text-center">
+                <div class="text-success mb-4">
+                    <i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i>
+                </div>
+                
+                <h2 class="text-success mb-3">Payment Successful!</h2>
+                
+                <div class="alert alert-success" role="alert">
+                    <h4 class="alert-heading">Adoption Fee Paid</h4>
+                    <p class="mb-2">Your adoption fee of <strong>$100.00 CAD</strong> has been successfully processed.</p>
+                    <hr>
+                    <p class="mb-0">A confirmation email has been sent to <strong th:text="${customerEmail}">customer@email.com</strong></p>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Payment Status</h5>
+                    <span class="badge bg-success fs-6" th:text="${status}">Complete</span>
+                </div>
+                
+                <div class="alert alert-info" role="alert">
+                    <h5 class="alert-heading">What's Next?</h5>
+                    <p class="mb-2">Your application status has been updated to <strong>PAID_ADOPTION_FEE</strong></p>
+                    <p class="mb-0">Our staff will contact you soon to arrange the final adoption process and pet pickup.</p>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a th:href="@{/user/profile}" class="btn btn-primary me-md-2">View My Profile</a>
+                    <a th:href="@{/}" class="btn btn-outline-secondary">Back to Home</a>
+                </div>
+                
+                <div class="mt-4">
+                    <small class="text-muted">
+                        Questions? Contact us at <a href="mailto:info@montrealpetshelter.com">info
+                        @montrealpetshelter.com</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script src="/js/return.js" defer></script>
+
+</body>
+</html>

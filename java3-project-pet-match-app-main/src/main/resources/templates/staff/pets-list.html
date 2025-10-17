@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/layout.html :: layout(~{::body}, 'Staff Pets List')}">
+<body>
+
+    <h1 class="display-5 mb-4 text-center">Staff Pets List</h1>
+    <p class="text-center text-muted">Manage all pets profiles, and user applications</p>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="d-flex justify-content-center gap-2 my-3">
+                <a th:href="@{create-pet}" class="btn btn-outline-info">Add New Pet</a>
+                <a th:href="@{applications-list}" class="btn btn-outline-info">View All applications</a>
+            </div>
+            <div class="d-flex justify-content-center mt-4">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/staff/pets-list(page=${currentPage - 1}, size=${15}, sort=${sortField}, dir=${sortDir})}">
+                                Previous
+                            </a>
+                        </li>
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/admin/users-list(page=${i}, size=${15}, sort=${sortField}, dir=${sortDir})}"
+                               th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/staff/pets-list(page=${currentPage + 1}, size=${15}, sort=${sortField}, dir=${sortDir})}">
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <h2 class="h4 mb-3">All Pets</h2>
+
+            <table class="table table-hover table-striped shadow-sm rounded">
+                <thead class="table-dark">
+                <tr>
+                    <th th:replace="~{layout/fragments :: petsortableHeader('id', 'ID')}"></th>
+                    <th th:replace="~{layout/fragments :: petsortableHeader('petName', 'Pet Name')}"></th>
+                    <th th:replace="~{layout/fragments :: petsortableHeader('datePetSheltered', 'Date Sheltered')}"></th>
+                    <th th:replace="~{layout/fragments :: petsortableHeader('availability', 'Availability')}"></th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="pet : ${pets}">
+                    <td th:text="${pet.id}"></td>
+                    <td th:text="${pet.petName}"></td>
+                    <td th:text="${pet.datePetSheltered}"></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${pet.availability == 'ADOPTED'} ? 'bg-danger' :
+                                              (${pet.availability == 'RESERVED'} ? 'bg-warning text-dark' : 'bg-success')"
+                              th:text="${pet.availability}">AVAILABLE</span>
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a th:href="@{/pet/{id}(id=${pet.id})}" class="btn btn-outline-info">View Pet</a>
+                            <a th:href="@{/staff/edit-pet(id=${pet.id})}" class="btn btn-outline-secondary">Edit Pet</a>
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" th:data-bs-target="'#deleteModal' + ${pet.id}">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div th:each="pet : ${pets}">
+        <div class="modal fade" th:id="'deleteModal' + ${pet.id}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to permanently delete pet:
+                            <strong th:text="${pet.petName} + ' (' + ${pet.petType} + ')'"></strong>?</p>
+                        <p class="text-danger small">This action cannot be undone and will delete all associated applications.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form th:action="@{/staff/pet/{id}/delete(id=${pet.id})}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn btn-danger">Delete Pet</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/layout.html :: layout(~{::body}, 'Staff Applications List')}">
+<body>
+
+    <h1 class="display-5 mb-4 text-center">Applications List</h1>
+    <p class="text-center text-muted">Manage All Applications</p>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-center gap-2 my-3">
+                <a th:href="@{pets-list}" class="btn btn-outline-info">Back to Pet List</a>
+            </div>
+
+            <div class="d-flex justify-content-center mt-4">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/staff/applications-list(page=${currentPage - 1}, size=${15}, sort=${sortField}, dir=${sortDir})}">
+                                Previous
+                            </a>
+                        </li>
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/staff/applications-list(page=${i}, size=${15}, sort=${sortField}, dir=${sortDir})}"
+                               th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/staff/applications-list(page=${currentPage + 1}, size=${15}, sort=${sortField}, dir=${sortDir})}">
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <h2 class="h4 mb-3">All Applications</h2>
+
+             <table class="table table-hover table-striped shadow-sm rounded">
+                <thead class="table-dark">
+                <tr>
+                    <th th:replace="~{layout/fragments :: appsortableHeader('email', 'Email')}"></th>
+                    <th th:replace="~{layout/fragments :: appsortableHeader('petName', 'Pet Name')}"></th>
+                    <th th:replace="~{layout/fragments :: appsortableHeader('dateAppReceived', 'Date received')}"></th>
+                    <th th:replace="~{layout/fragments :: appsortableHeader('status', ' Application Status')}"></th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="app : ${applications}">
+                    <td th:text="${app.user.getEmail()}"></td>
+                    <td th:text="${app.pet.getPetName()}"></td>
+                    <td th:text="${app.dateAppReceived}"></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${app.applicationStatus == 'APPROVED'} ? 'bg-danger' :
+                                              (${app.applicationStatus == 'REJECTED'} ? 'bg-warning text-dark' : 'bg-success')"
+                              th:text="${app.applicationStatus}">application_status</span>
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a th:href="@{/staff/application/{id}(id=${app.id})}"
+                               class="btn btn-outline-info">View Application</a>
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" th:data-bs-target="'#deleteModal' + ${app.id}">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div th:each="app : ${applications}">
+        <div class="modal fade" th:id="'deleteModal' + ${app.id}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to permanently delete application:
+                            <strong th:text="${app.id} + ' (' + ${app.dateAppReceived} + ')'"></strong>?</p>
+                        <p class="text-danger small">This action cannot be undone</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form th:action="@{/staff/application/{id}/delete(id=${app.id})}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn btn-danger">Delete Application</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

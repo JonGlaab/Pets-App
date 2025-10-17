@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/layout.html :: layout(~{::body}, 'Application Review')}">
+<body>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-center gap-2 my-3">
+                <a th:href="@{/staff/applications-list}" class="btn btn-outline-info">← Back to Applications List</a>
+            </div>
+        </div>
+        <div>
+            <h2 class="mb-4 text-center" th:text="${app.user.getFirstName()} + '\'s application details for ' + ${app.pet.getPetName()}" >Pet Being Applied For</h2>
+
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Application Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Application ID:</label>
+                                        <p class="form-control-plaintext" th:text="${app.id != null ? app.id : 'Not specified'}"></p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Date Received:</label>
+                                        <p class="form-control-plaintext" th:text="${app.dateAppReceived != null ? app.dateAppReceived : 'Not specified'}"></p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Status:</label>
+                                        <span class="badge fs-6"
+                                              th:classappend="${app.applicationStatus == 'APPROVED'} ? 'bg-success' :
+                                                              (${app.applicationStatus == 'REJECTED'} ? 'bg-danger' : 'bg-warning text-dark')"
+                                              th:text="${app.applicationStatus != null ? app.applicationStatus : 'Not specified'}">Status</span>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <form th:action="@{/staff/application/{id}/update-status(id=${app.id})}" method="post" id="statusUpdateForm">
+                                                <div class="row align-items-end">
+                                                    <div class="mb-3">
+                                                        <label for="statusSelect" class="form-label fw-bold">Update Application Status:</label>
+                                                        <select class="form-select" id="statusSelect" name="status" required>
+                                                            <option value="">Choose a status...</option>
+                                                            <option th:each="status : ${applicationStatuses}"
+                                                                    th:value="${status}"
+                                                                    th:text="${status}"
+                                                                    th:selected="${status == app.applicationStatus}">
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <button type="submit" class="btn btn-primary" id="updateStatusBtn">
+                                                            <i class="fas fa-save"></i> Update Status
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Home Type:</label>
+                                        <p class="form-control-plaintext" th:text="${app.hometype != null ? app.hometype : 'Not specified'}"></p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Household Situation:</label>
+                                        <p class="form-control-plaintext" th:text="${app.householdSituation != null ? app.householdSituation : 'Not specified'}"></p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Other Pets:</label>
+                                        <p class="form-control-plaintext" th:text="${app.otherPets != null ? app.otherPets : 'Not specified'}"></p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Yard Access:</label>
+                                        <p class="form-control-plaintext" th:text="${app.yardAccess != null ? (app.yardAccess ? 'Yes' : 'No') : 'Not specified'}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Additional Information:</label>
+                                        <div class="form-control-plaintext border p-3 bg-light" th:text="${app.additionalInfo != null ? app.additionalInfo : 'No additional information provided'}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+            <h2 class="mb-4 text-center" th:text="${app.pet.getPetName()} + '\'s details'" >Pet Being Applied For</h2>
+
+            <div class="row mb-4">
+                <div class="col-md-4 mb-4 text-center">
+                    <div class="square-wrapper">
+                        <div class="square-content">
+                            <img th:src="${app.pet.petPhotoUrl}"
+                                 alt="Pet Photo"
+                                 class="img-fluid"
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="row g-2">
+
+                        <div class="col-sm-6">
+                            <label for="breed" class="form-label">Breed</label>
+                            <input type="text" id="breed" class="form-control form-control-lg" th:value="${app.pet.petBreed}" readonly>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="age" class="form-label">Age</label>
+                            <input type="text" id="age" class="form-control form-control-lg" th:value="${app.pet.age}" readonly>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label for="date_pet_sheltered" class="form-label">Date Sheltered</label>
+                                <input type="date" id="date_pet_sheltered" class="form-control form-control-lg"
+                                       th:value="${app.pet.datePetSheltered}" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Sociability</label>
+
+                                <div class="mb-2 mt-2 ms-3">Dogs</div>
+                                <div class="form-check">
+                                    <input class="form-check-input ms-2" type="checkbox" disabled
+                                           th:checked="${app.pet.sociability.contains(T(edu.java3projectpetmatchapp.enums.Sociability).LIKES_DOGS)}">
+                                    <label class="form-check-label ms-2">Good with dogs</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input ms-2" type="checkbox" disabled
+                                           th:checked="${app.pet.sociability.contains(T(edu.java3projectpetmatchapp.enums.Sociability).DISLIKES_DOGS)}">
+                                    <label class="form-check-label ms-2">Not good with dogs</label>
+                                </div>
+
+                                <div class="mb-2 mt-3 ms-3">Cats</div>
+                                <div class="form-check">
+                                    <input class="form-check-input ms-2" type="checkbox" disabled
+                                           th:checked="${app.pet.sociability.contains(T(edu.java3projectpetmatchapp.enums.Sociability).LIKES_CATS)}">
+                                    <label class="form-check-label ms-2">Good with cats</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input ms-2" type="checkbox" disabled
+                                           th:checked="${app.pet.sociability.contains(T(edu.java3projectpetmatchapp.enums.Sociability).DISLIKES_CATS)}">
+                                    <label class="form-check-label ms-2">Not good with cats</label>
+                                </div>
+                                <div class="mb-2 mt-3 ms-3">Kids</div>
+                                <div class="form-check">
+                                    <input class="form-check-input ms-2" type="checkbox" disabled
+                                           th:checked="${app.pet.sociability.contains(T(edu.java3projectpetmatchapp.enums.Sociability).LIKES_KIDS)}">
+                                    <label class="form-check-label ms-2">Good with kids</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input ms-2" type="checkbox" disabled
+                                           th:checked="${app.pet.sociability.contains(T(edu.java3projectpetmatchapp.enums.Sociability).DISLIKES_KIDS)}">
+                                    <label class="form-check-label ms-2">Not good with kids</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label for="specialNeeds" class="form-label">Special Needs</label>
+                                <textarea rows="4" id="specialNeeds" class="form-control form-control-lg"
+                                          th:field="${app.pet.specialNeeds}"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="healthIssues" class="form-label">Health Issues</label>
+                                <textarea rows="4" id="healthIssues" class="form-control form-control-lg"
+                                          th:field="${app.pet.healthIssues}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="row">
+                        <div class="col-12 mt-3">
+                            <label for="about" class="form-label">Bio</label>
+                            <textarea id="about" rows="5" class="form-control" placeholder="Bio" readonly th:text="${app.pet.about}"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <h2 class="mb-4 text-center" th:text="${app.user.getFirstName()} + '\'s details'" >User applying for pet</h2>
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="square-wrapper">
+                            <div class="square-content">
+                                <img th:src="${app.user.userPhotoUrl}"
+                                     alt="Profile Photo"
+                                     class="img-fluid"
+                                     style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="row g-2">
+                            <div class="col-sm-6">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" id="firstName" class="form-control form-control-lg" th:value="${app.user.firstName}" readonly>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" id="lastName" class="form-control form-control-lg" th:value="${app.user.lastName}" readonly>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" id="email" class="form-control form-control-lg" th:value="${app.user.email}" readonly>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="petPreference" class="form-label">Pet Preference</label>
+                                <input type="text" id="petPreference" class="form-control form-control-lg" th:value="${app.user.petPreference}" readonly>
+                            </div>
+
+                            <div class="col-12 mt-3">
+                                <label for="bio" class="form-label">Bio</label>
+                                <textarea id="bio" rows="5" class="form-control" placeholder="Bio" readonly th:text="${app.user.bio}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statusSelect = document.getElementById('statusSelect');
+    const updateBtn = document.getElementById('updateStatusBtn');
+    const form = document.getElementById('statusUpdateForm');
+    
+    function toggleUpdateButton() {
+        const currentStatus = statusSelect.options[statusSelect.selectedIndex];
+        const isDifferentFromCurrent = currentStatus.value !== '' && 
+                                     currentStatus.value !== statusSelect.dataset.currentStatus;
+        updateBtn.disabled = !isDifferentFromCurrent;
+    }
+    
+    statusSelect.dataset.currentStatus = statusSelect.value;
+    
+    toggleUpdateButton();
+    
+    statusSelect.addEventListener('change', toggleUpdateButton);
+    
+    form.addEventListener('submit', function(e) {
+        const selectedStatus = statusSelect.value;
+        const currentStatus = statusSelect.dataset.currentStatus;
+        
+        if (selectedStatus === currentStatus) {
+            e.preventDefault();
+            alert('Please select a different status to update.');
+            return false;
+        }
+        
+        if (!confirm(`Are you sure you want to update the application status to "${selectedStatus}"?`)) {
+            e.preventDefault();
+            return false;
+        }
+        
+        updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+        updateBtn.disabled = true;
+    });
+});
+</script>

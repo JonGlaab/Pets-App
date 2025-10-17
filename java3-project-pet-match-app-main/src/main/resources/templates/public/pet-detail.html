@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/layout.html :: layout(~{::body}, 'Look at this perfect angel')}">
+<body>
+
+    <h2 class="mb-4 text-center" th:text="'You\'re looking at ' + ${pet.petName}">Some scruffy little fuzzy guy</h2>
+
+    <div class="row">
+        <div class="col-md-4 mb-4 text-center">
+            <div class="square-wrapper">
+                <div class="square-content">
+                    <img th:src="${pet.petPhotoUrl}"
+                         alt="Pet Photo"
+                         class="img-fluid"
+                         style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <span class="badge mb-3" id="availability"
+                      th:classappend="${pet.availability == 'ADOPTED'} ? 'bg-danger' :
+                                 (${pet.availability == 'RESERVED'} ? 'bg-warning text-dark' : 'bg-success')"
+                      th:text="${pet.availability}">AVAILABLE
+                </span>
+                <span>
+                    <a th:href="@{/pet/{id}/apply(id=${pet.id})}" class="btn btn-info"
+                        th:text="'Apply for ' + ${pet.getPetName()}" >Apply to adopt</a>
+                </span>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="row g-2">
+                <div class="col-sm-6">
+                    <label for="breed" class="form-label">Breed</label>
+                    <input type="text" id="breed" class="form-control form-control-lg" th:value="${pet.petBreed}" readonly>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="age" class="form-label">Age</label>
+                    <input type="text" id="age" class="form-control form-control-lg" th:value="${pet.age}" readonly>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="mb-3">
+                        <label for="date_pet_sheltered" class="form-label">Date Sheltered</label>
+                        <input type="date" id="date_pet_sheltered" class="form-control form-control-lg"
+                               th:value="${pet.datePetSheltered}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Sociability</label>
+
+                        <div class="mb-2 mt-2 ms-3">Dogs</div>
+                        <div class="form-check">
+                            <input class="form-check-input ms-2" type="checkbox" disabled
+                                   th:checked="${pet.sociability.contains(T(edu.java3projectpetmatchapp.enums.Sociability).LIKES_DOGS)}">
+                            <label class="form-check-label ms-2">Good with dogs</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input ms-2" type="checkbox" disabled
+                                   th:checked="${pet.sociability.contains(T(edu.java3projectpetmatchapp.enums.Sociability).DISLIKES_DOGS)}">
+                            <label class="form-check-label ms-2">Not good with dogs</label>
+                        </div>
+
+                        <div class="mb-2 mt-3 ms-3">Cats</div>
+                        <div class="form-check">
+                            <input class="form-check-input ms-2" type="checkbox" disabled
+                                   th:checked="${pet.sociability.contains(T(edu.java3projectpetmatchapp.enums.Sociability).LIKES_CATS)}">
+                            <label class="form-check-label ms-2">Good with cats</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input ms-2" type="checkbox" disabled
+                                   th:checked="${pet.sociability.contains(T(edu.java3projectpetmatchapp.enums.Sociability).DISLIKES_CATS)}">
+                            <label class="form-check-label ms-2">Not good with cats</label>
+                        </div>
+
+                        <div class="mb-2 mt-3 ms-3">Kids</div>
+                        <div class="form-check">
+                            <input class="form-check-input ms-2" type="checkbox" disabled
+                                   th:checked="${pet.sociability.contains(T(edu.java3projectpetmatchapp.enums.Sociability).LIKES_KIDS)}">
+                            <label class="form-check-label ms-2">Good with kids</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input ms-2" type="checkbox" disabled
+                                   th:checked="${pet.sociability.contains(T(edu.java3projectpetmatchapp.enums.Sociability).DISLIKES_KIDS)}">
+                            <label class="form-check-label ms-2">Not good with kids</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="mb-3">
+                        <label for="specialNeeds" class="form-label">Special Needs</label>
+                        <textarea rows="4" id="specialNeeds" class="form-control form-control-lg"
+                                  th:field="${pet.specialNeeds}"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="healthIssues" class="form-label">Health Issues</label>
+                        <textarea rows="4" id="healthIssues" class="form-control form-control-lg"
+                                  th:field="${pet.healthIssues}"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 mt-3 pb-3">
+                <label for="about" class="form-label">Bio</label>
+                <textarea id="about" rows="5" class="form-control" placeholder="Bio" readonly th:text="${pet.about}"></textarea>
+            </div>
+        </div>
+    </div>
+</body>
